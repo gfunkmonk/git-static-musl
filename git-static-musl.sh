@@ -150,7 +150,6 @@ cd git-${GIT_VERSION}/ && \
   CFLAGS='-Os -ffunction-sections -fdata-sections -Wno-unterminated-string-initialization \
   -I/usr/include/x86_64-linux-gnu -isystem /usr/include/mit-krb5 -I/usr/include/p11-kit-1' && \
 CC=clang make NO_PERL=1 RUNTIME_PREFIX=1 -j\$(nproc) && \
-if [ ! -f "git" ]; then echo -e "${TOMATO}Error: git binary not found after build${NC}" >&2 && exit 1; fi && \
 strip git && \
 upx --lzma git"
 mkdir -p dist
@@ -158,15 +157,3 @@ cp "./pasta/git-${GIT_VERSION}/git" "dist/git-${ARCH}"
 if command -v file >/dev/null 2>&1; then echo -e "${ORANGE} File Info:  $(file "dist/git-${ARCH}" | cut -d: -f2-)${NC}"; fi
 tar -C dist -cJf "dist/git-${ARCH}.tar.xz" "git-${ARCH}"
 echo -e "${LEMON}= All done! Binary: dist/git-${ARCH} ($(du -sh "dist/git-${ARCH}" | cut -f1))${NC}"
-
-
-
-
-
-
-
-
-
-
-
-v
