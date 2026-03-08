@@ -152,7 +152,7 @@ cd git-${GIT_VERSION}/ && \
 CC=clang make NO_PERL=1 RUNTIME_PREFIX=1 -j\$(nproc) && \
 strip git && \
 upx --lzma git"
-if [ ! -f "git-${GIT_VERSION}/git" ]; then
+if [ ! -f "git" ]; then
   echo -e "${TOMATO}Error: git binary not found after build${NC}" >&2
   exit 1
 fi
