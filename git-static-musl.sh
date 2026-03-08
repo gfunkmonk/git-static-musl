@@ -78,8 +78,8 @@ DEBIAN_DEPS=(wget curl binutils)
 [ -n "${QEMU_ARCH}" ] && DEBIAN_DEPS+=(qemu-user-static)
 sudo apt-get update -qy && sudo apt-get install -y "${DEBIAN_DEPS[@]}"
 
-echo -e "${AQUA}= downloading xz-${GIT_VERSION} tarball${NC}"
-GIT_TARBALL="xz-${GIT_VERSION}.tar.xz"
+echo -e "${AQUA}= downloading git-${GIT_VERSION} tarball${NC}"
+GIT_TARBALL="git-${GIT_VERSION}.tar.xz"
 GIT_DOWNLOADED=false
 for mirror in "${GIT_MIRRORS[@]}"; do
   echo -e "${TAWNY}= trying mirror: ${mirror}${NC}"
@@ -94,7 +94,7 @@ for mirror in "${GIT_MIRRORS[@]}"; do
   fi
 done
 if [ "${GIT_DOWNLOADED}" = false ]; then
-  echo -e "${TOMATO}= ERROR: all mirrors failed for xz-${GIT_VERSION}.tar.xz${NC}"
+  echo -e "${TOMATO}= ERROR: all mirrors failed for git-${GIT_VERSION}.tar.xz${NC}"
   exit 1
 fi
 GIT_KNOWN_SHA256_2_53_0="5818bd7d80b061bbbdfec8a433d609dc8818a05991f731ffc4a561e2ca18c653"
@@ -111,7 +111,7 @@ verify_checksum "${TARBALL}" "${ALPINE_SHA256}"
 echo -e "${MINT}= extract rootfs${NC}"
 mkdir -p pasta
 tar xf "${TARBALL}" -C pasta/
-echo -e "${PEACH}= copy resolv.conf and xz tarball into chroot${NC}"
+echo -e "${PEACH}= copy resolv.conf and git tarball into chroot${NC}"
 cp /etc/resolv.conf ./pasta/etc/
 cp "${GIT_TARBALL}" "./pasta/${GIT_TARBALL}"
 
@@ -142,22 +142,34 @@ zlib-static \
 expat-dev \
 expat-static
 upx && \
-tar xf xz-${GIT_VERSION}.tar.xz && \
-cd xz-${GIT_VERSION}/ && \
+tar xf git-${GIT_VERSION}.tar.xz && \
+cd git-${GIT_VERSION}/ && \
 ./configure CC=clang --without-tcltk --with-curl --with-openssl \
   --with-expat --sysconfdir=/etc --with-editor=nano \
   LDFLAGS='-static -Wl,--gc-sections -lcurl' PKG_CONFIG='pkg-config --static' \
   CFLAGS='-Os -ffunction-sections -fdata-sections -Wno-unterminated-string-initialization \
   -I/usr/include/x86_64-linux-gnu -isystem /usr/include/mit-krb5 -I/usr/include/p11-kit-1' && \
 CC=clang make NO_PERL=1 RUNTIME_PREFIX=1 -j\$(nproc) && \
-strip src/xz/xz && \
-if [ ! -f "xz-${GIT_VERSION}/src/xz/xz" ]; then
-  echo -e "${TOMATO}Error: xz binary not found after build${NC}" >&2
+strip git && \
+upx --lzma git"
+if [ ! -f "git-${GIT_VERSION}/git" ]; then
+  echo -e "${TOMATO}Error: git binary not found after build${NC}" >&2
   exit 1
 fi
-upx --lzma src/xz/xz"
 mkdir -p dist
-cp "./pasta/xz-${GIT_VERSION}/src/xz/xz" "dist/xz-${ARCH}"
-if command -v file >/dev/null 2>&1; then echo -e "${ORANGE} File Info:  $(file "dist/xz-${ARCH}" | cut -d: -f2-)${NC}"; fi
-tar -C dist -cJf "dist/xz-${ARCH}.tar.xz" "xz-${ARCH}"
-echo -e "${LEMON}= All done! Binary: dist/xz-${ARCH} ($(du -sh "dist/xz-${ARCH}" | cut -f1))${NC}"
+cp "./pasta/git-${GIT_VERSION}/git" "dist/git-${ARCH}"
+if command -v file >/dev/null 2>&1; then echo -e "${ORANGE} File Info:  $(file "dist/git-${ARCH}" | cut -d: -f2-)${NC}"; fi
+tar -C dist -cJf "dist/git-${ARCH}.tar.xz" "git-${ARCH}"
+echo -e "${LEMON}= All done! Binary: dist/git-${ARCH} ($(du -sh "dist/git-${ARCH}" | cut -f1))${NC}"
+
+
+
+
+
+
+
+
+
+
+
+v
