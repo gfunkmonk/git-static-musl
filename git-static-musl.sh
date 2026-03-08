@@ -140,7 +140,7 @@ perl \
 zlib-dev \
 zlib-static \
 expat-dev \
-expat-static
+expat-static \
 upx && \
 tar xf git-${GIT_VERSION}.tar.xz && \
 cd git-${GIT_VERSION}/ && \
